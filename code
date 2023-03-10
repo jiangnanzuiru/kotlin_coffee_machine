@@ -1,0 +1,133 @@
+package machine
+const val WATERPERCUP = 200
+const val MILKPERCUP = 50
+const val BEANPERCUP = 15
+
+const val E_WATER_PERCUP = 250
+const val E_MILK_PERCUP = 0
+const val E_BEAN_PERCUP = 16
+const val E_PRICE_PERCUP = 4
+
+const val L_WATER_PERCUP = 350
+const val L_MILK_PERCUP = 75
+const val L_BEAN_PERCUP = 20
+const val L_PRICE_PERCUP = 7
+
+const val C_WATER_PERCUP = 200
+const val C_MILK_PERCUP = 100
+const val C_BEAN_PERCUP = 12
+const val C_PRICE_PERCUP = 6
+
+class CoffeeMachine{
+    var waterTotal = 400
+    var milkTotal = 540
+    var beanTotal = 120
+    var papercupTotal = 9
+    var moneyTotal = 550
+
+    fun checkForResource(wD: Int, wS: Int, mD: Int, mS: Int, bD: Int, bS: Int, pD: Int, pS: Int): String {
+        val missingResourceList = mutableListOf<String>()
+        if(wD > wS) missingResourceList.add("water")
+        if(mD > mS) missingResourceList.add("milk")
+        if(bD > bS) missingResourceList.add("coffee beans")
+        if(pD > pS) missingResourceList.add("disposable cups")
+        if(!missingResourceList.isNullOrEmpty()) {
+            println("Sorry, not enough ${missingResourceList.joinToString(separator = ", ")}!")
+            println(missingResourceList)
+            return "No"
+        } else {
+            println("I have enough resources, making you a coffee!")
+            return "Yes"
+        }
+    }
+
+    fun buy() {
+    println("\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu: ")
+    val coffeeChoice = readln()
+        if (coffeeChoice == "back") {
+            askForTask()
+        } else {
+            when (coffeeChoice.toInt()) {
+                1 -> {
+                    val checkResult = checkForResource(E_WATER_PERCUP, waterTotal, E_MILK_PERCUP, milkTotal, E_BEAN_PERCUP, beanTotal, 1, papercupTotal)
+                    if (checkResult == "Yes") {
+                        waterTotal -= E_WATER_PERCUP
+                        milkTotal -= E_MILK_PERCUP
+                        beanTotal -= E_BEAN_PERCUP
+                        papercupTotal -= 1
+                        moneyTotal += E_PRICE_PERCUP
+                    }
+                }
+                2 -> {
+                    val checkResult = checkForResource(L_WATER_PERCUP, waterTotal, L_MILK_PERCUP, milkTotal, L_BEAN_PERCUP, beanTotal, 1, papercupTotal)
+                    if (checkResult == "Yes") {
+                        waterTotal -= L_WATER_PERCUP
+                        milkTotal -= L_MILK_PERCUP
+                        beanTotal -= L_BEAN_PERCUP
+                        papercupTotal -= 1
+                        moneyTotal += L_PRICE_PERCUP
+                    }
+                }
+                3 -> {
+                    val checkResult = checkForResource(C_WATER_PERCUP, waterTotal, C_MILK_PERCUP, milkTotal, C_BEAN_PERCUP, beanTotal, 1, papercupTotal)
+                    if (checkResult == "Yes") {
+                        waterTotal -= C_WATER_PERCUP
+                        milkTotal -= C_MILK_PERCUP
+                        beanTotal -= C_BEAN_PERCUP
+                        papercupTotal -= 1
+                        moneyTotal += C_PRICE_PERCUP
+                    }
+                }
+            }
+        }
+    }
+    
+    fun fill() {
+        println("Write how many ml of water you want to add:")
+        waterTotal += readln().toInt()
+        println("Write how many ml of milk you want to add:")
+        milkTotal += readln().toInt()
+        println("Write how many grams of coffee beans you want to add:")
+        beanTotal += readln().toInt()
+        println("Write how many disposable cups you want to add:")
+        papercupTotal += readln().toInt()
+    }
+    
+    fun take() {
+        println("I gave you \$$moneyTotal")
+        moneyTotal = 0
+    }
+
+    fun remaining() {
+        displayInfo()
+    }
+    
+    fun askForTask(): String {
+        println("Write action (buy, fill, take, remaining, exit): ")
+        val taskInput = readln()
+        if (taskInput == "buy") {
+            buy()
+        } else if (taskInput == "fill") {
+            fill()
+        } else if (taskInput == "take") {
+            take()
+        } else if (taskInput == "remaining") {
+            remaining()
+        }
+        return taskInput
+    }
+    
+    fun displayInfo() {
+        println("\nThe coffee machine has:\n$waterTotal ml of water\n$milkTotal ml of milk\n$beanTotal g of coffee beans")
+        println("$papercupTotal disposable cups\n\$$moneyTotal of money\n")
+    }        
+}
+
+fun main() {
+    
+    val coffeeMachine1 = CoffeeMachine()
+
+    do {
+        val taskCurrent = coffeeMachine1.askForTask()
+        } while (taskCurrent != "exit")
+    }
